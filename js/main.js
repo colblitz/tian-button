@@ -14,7 +14,6 @@ const delta = ([x,...xs]) =>
 
 const roundTo1Decimal = x => Math.round(x * 10) / 10
 
-
 function updateTimes(all_times) {
   // number of times, 5am-5am
   var threshold = new Date(Math.floor(((new Date()).getTime() - 1000 * 60 * 60 * 9) / 86400000) * 86400000 + 1000 * 60 * 60 * 9);    
@@ -52,7 +51,6 @@ function updateTimes(all_times) {
     threshold1 = new Date(threshold1.getTime() - 1000 * 60 * 60 * 24);
     threshold2 = new Date(threshold2.getTime() - 1000 * 60 * 60 * 24);
   }
-
   document.getElementById('stat3').textContent = roundTo1Decimal(average(Object.values(counts)));
 
   // average time between times, past 7 days
@@ -66,7 +64,7 @@ function updateTimes(all_times) {
   var avg = average(delta(new_times)) / (1000 * 60);
   document.getElementById('stat4').textContent = "" + roundTo1Decimal(avg) + " min";
   
-  
+  // Update list of times
   var times = document.getElementById('times');
   while (times.firstChild) {
     times.removeChild(times.firstChild);
@@ -90,8 +88,6 @@ function resetTimes() {
 }
 
 function buttonClicked() {
-  console.log("oijasoijef");
-
   var xhr = new XMLHttpRequest();
   xhr.open("POST", "/buttonclicked", true);
   xhr.setRequestHeader('Content-Type', 'application/json');
@@ -99,11 +95,18 @@ function buttonClicked() {
 
   xhr.onload = function() {
     var data = JSON.parse(this.responseText);
-    console.log("got response");
-    console.log(data);
     var all_times = data.times.split(",").map(x => new Date(x));
     updateTimes(all_times);
-    
   };
-  console.log("after post request");
+}
+
+function initialLoad() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/initial", true);
+  xhr.send(null);
+  xhr.onload = function() {
+    var data = JSON.parse(this.responseText);
+    var all_times = data.times.split(",").map(x => new Date(x));
+    updateTimes(all_times);
+  };
 }

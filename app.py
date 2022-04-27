@@ -15,6 +15,8 @@ JS_LOCALE_FORMAT = "%-m/%-d/%Y %-I:%M:%S %p"
 times = []
 with open(TIMES_FILE, 'r') as f:
     for line in f:
+        if line.strip() == "RESET":
+            times = []
         times.append(datetime.strptime(line.strip(), DATETIME_FORMAT))
 
 def append_time(t):
@@ -38,6 +40,10 @@ def tianbutton():
 def send_js(path):
     return send_from_directory('js', path)
 
+@app.route('/initial', methods=['GET'])
+def initial():
+    return {"times": ",".join([t.isoformat() for t in times])}
+
 @app.route('/buttonclicked', methods=['POST'])
 def button_clicked():
     t = datetime.now()
@@ -50,7 +56,8 @@ def reset_times():
     global times
     print("got request to reset")
     print(times)
-    open(TIMES_FILE, 'w').close()
+    with open(TIMES_FILE, 'a') as f:
+        f.write("RESET\n")
     times = []
     return {"times": ",".join([t.isoformat() for t in times])}
 

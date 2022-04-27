@@ -28,6 +28,10 @@ app = Flask(__name__, static_url_path='')
 
 @app.route('/')
 def index():
+    return "nothing to see here"
+
+@app.route('/tianbutton')
+def tianbutton():
     return render_template('index.html', times=[datetime.strftime(t, JS_LOCALE_FORMAT) for t in times])
 
 @app.route('/js/<path:path>')

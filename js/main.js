@@ -70,11 +70,16 @@ function updateTimes(all_times) {
     times.removeChild(times.firstChild);
   }
 
-  for (let time of all_times) {
+  all_times.reverse().forEach(function(time) {
     var item = document.createElement('div');
     item.textContent = time.toLocaleString();
     times.appendChild(item);
-  }
+  });
+  // for (let time of all_times) {
+  //   var item = document.createElement('div');
+  //   item.textContent = time.toLocaleString();
+  //   times.appendChild(item);
+  // }
 }
 
 function resetTimes() {
